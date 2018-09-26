@@ -6,7 +6,7 @@ public abstract class BeanFactory {
 
     /**
      * 生成类
-     * @param tClass 余姚生成的类对象
+     * @param tClass 需要生成的类对象
      * @return 实例化的类
      */
     protected abstract <T> T generatorClass(Class<T> tClass);

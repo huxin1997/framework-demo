@@ -18,7 +18,6 @@ public class AbstractBeanFactory extends BeanFactory {
         try {
             return invokeConstructor(tClass.getDeclaredConstructor());
         } catch (NoSuchMethodException e) {
-            //todo 此处应当去寻找相关构造器
             throw new BeanInitException("你还没有对此类设计构造函数！或此类是抽象类?");
         }
     }
