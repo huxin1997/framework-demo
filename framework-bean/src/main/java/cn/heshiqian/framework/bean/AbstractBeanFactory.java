@@ -1,9 +1,9 @@
 package cn.heshiqian.framework.bean;
 
 import cn.heshiqian.framework.util.Util;
-import com.sun.org.glassfish.gmbal.Description;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public class AbstractBeanFactory extends BeanFactory {
 
@@ -18,14 +18,23 @@ public class AbstractBeanFactory extends BeanFactory {
         try {
             return invokeConstructor(tClass.getDeclaredConstructor());
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            //todo 此处应当去寻找相关构造器
+            throw new BeanInitException("你还没有对此类设计构造函数！或此类是抽象类?");
         }
-        return null;
     }
 
     @Override
     protected <T> T invokeConstructor(Constructor<T> constructor, Object... args) throws BeanInitException {
-        return null;
+        Util.assertNull(constructor,"构造器为空！");
+        try {
+            return constructor.newInstance();
+        } catch (InstantiationException e) {
+            throw new BeanInitException("实例化失败，此类是接口或者抽象类?",e);
+        } catch (IllegalAccessException e) {
+            throw new BeanInitException("实例化失败，构造函数是私有的?",e);
+        } catch (InvocationTargetException e) {
+            throw new BeanInitException("实例化失败，构造函数执行过程有异常抛出",e);
+        }
     }
 
     @Deprecated
