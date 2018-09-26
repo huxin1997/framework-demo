@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container>
+    <bean id="a" class="a">
+    </bean>
+    <bean id="b" class="b">
+    </bean>
+    <bean id="c" class="c">
+    </bean>
+</container>

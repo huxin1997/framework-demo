@@ -36,6 +36,16 @@ public class AbstractBeanFactory extends BeanFactory {
         }
     }
 
+    @Override
+    public <T> T newBean(String className) throws BeanInitException {
+        return null;
+    }
+
+    @Override
+    protected <T> T findClassNameInitToObj() throws BeanInitException {
+        return null;
+    }
+
     @Deprecated
     @Override
     protected <T> T generatorClass(Class<T> tClass) {

@@ -31,5 +31,10 @@ public abstract class BeanFactory {
 
 
 
+    public abstract <T>T newBean(String className) throws BeanInitException;
+
+
+    protected abstract <T>T findClassNameInitToObj() throws BeanInitException;
+
 
 }
