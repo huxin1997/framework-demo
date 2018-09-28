@@ -37,8 +37,31 @@ public class AbstractBeanFactory extends BeanFactory {
     }
 
     @Override
-    public <T> T newBean(String className) throws BeanInitException {
-        return null;
+    public Object newBean(String className) throws BeanInitException {
+        Util.assertNull(className);
+        try {
+            return invokeConstructor(Class.forName(className).getDeclaredConstructor());
+        } catch (NoSuchMethodException e) {
+            throw new BeanInitException("你还没有对此类设计构造函数！或此类是抽象类?");
+        } catch (ClassNotFoundException e) {
+            throw new BeanInitException("没有找到此类！请检查类名和包名",e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T newBean(String className, Class<T> type) throws BeanInitException,ClassCastException {
+        Util.assertNull(className,type);
+        try {
+            Class<?> aClass = Class.forName(className);
+            return (T) invokeConstructor(aClass.getDeclaredConstructor());
+        } catch (ClassNotFoundException e) {
+            throw new BeanInitException("没有找到此类！请检查类名和包名",e);
+        } catch (NoSuchMethodException e) {
+            throw new BeanInitException("你还没有对此类设计构造函数！或此类是抽象类?");
+//        } catch (ClassCastException e){
+//            throw new BeanInitException("无法将"+className+"转换为"+type.getTypeName()+"类型，请检查是否为其子类",e);
+        }
     }
 
     @Override

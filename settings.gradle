@@ -1,4 +1,5 @@
 rootProject.name = 'framework-demo'
 include 'framework-bean'
 include 'framework-util'
+include 'framework-context'
 

@@ -7,8 +7,10 @@ public interface XmlBeanReader {
 
     void read();
 
-    void getBean(String id);
+    Object getBean(String id);
 
     void parseXml();
+
+    void showBeanList();
 
 }

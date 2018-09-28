@@ -11,64 +11,78 @@ import javax.xml.parsers.SAXParser;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 public class XmlBeanReaderImpl implements XmlBeanReader {
 
     private static String xmlPath;
-    private static SAXReader reader=new SAXReader();
+    private static SAXReader reader = new SAXReader();
     private Document xml;
+
+    private static HashMap<String, HashMap<String, String>> beanList = new HashMap<>();
 
     @SuppressWarnings("all")
     @Override
     public void read(String xmlPath) {
-        this.xmlPath=xmlPath;
-        parseXml();
+        if (this.xmlPath == null) {
+            this.xmlPath = xmlPath;
+            parseXml();
+        } else
+            throw new XmlBeanParseException("重复读取xml文件！");
     }
 
     @Override
     public void read() {
-        parseXml();
+        if (xml == null)
+            parseXml();
+        else
+            throw new XmlBeanParseException("重复读取xml文件！");
     }
 
     @Override
-    public void getBean(String id) {
-
+    public Object getBean(String id) {
+        Util.assertNull(id);
+        HashMap<String, String> keyV = beanList.get("$" + id);
+        return BeanFactory.injectBean(keyV.get("class"), null);
     }
 
+    @SuppressWarnings("all")
     @Override
     public void parseXml() {
         URL resource;
-        if(xmlPath!=null)
+        if (xmlPath != null)
             resource = Thread.currentThread().getContextClassLoader().getResource(xmlPath);
         else
             resource = Thread.currentThread().getContextClassLoader().getResource("beans.xml");
 
-        Util.assertNull(resource,"找不到beans.xml，请检查文件位置！");
+        Util.assertNull(resource, "找不到beans.xml，请检查文件位置！");
 
         try {
             xml = reader.read(resource);
         } catch (DocumentException e) {
-            throw new XmlBeanParseException("读取XML时发生错误！",e);
+            throw new XmlBeanParseException("读取XML时发生错误！", e);
         }
 
         Iterator<Element> bean = xml.getRootElement().elements("bean").iterator();
-
-        while (bean.hasNext()){
+        while (bean.hasNext()) {
             Element element = bean.next();
-            System.out.println(element.getName()+"{");
             Iterator<Attribute> iterator = element.attributeIterator();
-            while (iterator.hasNext()){
+            HashMap<String, String> temp = new HashMap<>();
+            while (iterator.hasNext()) {
                 Attribute attribute = iterator.next();
-                System.out.println("    "+attribute.getName()+"=="+attribute.getValue());
+                temp.put(attribute.getName(), attribute.getValue());
             }
-            System.out.println("}");
+            beanList.put("$" + temp.get("id"), temp);
         }
 
     }
 
-
+    @Override
+    public void showBeanList() {
+        System.out.println(beanList.toString());
+    }
 
 
 }

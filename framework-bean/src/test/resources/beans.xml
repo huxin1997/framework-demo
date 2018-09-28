@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <container>
     <bean id="a" class="a">
+        <feild name="" value="1111" type="java.lang.String"/>
     </bean>
     <bean id="b" class="b">
     </bean>
